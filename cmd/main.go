@@ -1,32 +1,31 @@
 package main
 
 import (
-    "fmt"
-    "NonuNamak/pkg/config"
-    "NonuNamak/pkg/database"
-    "NonuNamak/internal/model"
-    "NonuNamak/internal/service"
+	"NonuNamak/internal/controller"
+	"NonuNamak/internal/model"
+	"NonuNamak/internal/repository"
+	"NonuNamak/internal/service"
+	"NonuNamak/pkg/config"
+	"NonuNamak/pkg/database"
+	"fmt"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-    fmt.Println("NonuNamak — backend запускается...")
+	fmt.Println("NonuNamak — backend запускается...")
+	config.LoadEnv()
 
-    config.LoadEnv()
-    database.Connect()
+	database.Connect()
+	db := database.DB
 
-    // TODO: Запуск роутера и серверной логики
-    err := database.DB.AutoMigrate(&model.User{})
-    if err != nil {
-        fmt.Printf("Ошибка миграции базы данных: %v\n", err)
-        return
-    }
+	db.AutoMigrate(&model.User{})
 
-    fmt.Println("Миграция базы данных выполнена успешно")
+	userRepo := repository.NewUserRepository(db)
+	userService := service.NewUserService(userRepo)
+	userHandler := controller.NewUserHandler(userService)
 
-    user, err := service.CreateUser("John Doe", "jon@example.com", "securepassword")
-    if err != nil {
-       panic("Ошибка создании пользователя" + err.Error())
-    }
+	r := gin.Default()
+	controller.RegisterUserRoutes(r, userHandler)
 
-    fmt.Printf("✅ Новый пользователь: ID=%d, Email=%s\n", user.ID, user.Email)
+	r.Run(":8080")
 }

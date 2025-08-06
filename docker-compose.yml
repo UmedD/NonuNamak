@@ -6,11 +6,11 @@ services:
     container_name: nonunamak-postgres
     restart: always
     environment:
-      POSTGRES_USER: nonu
-      POSTGRES_PASSWORD: secret123
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 123456
       POSTGRES_DB: nonunamak_db
     ports:
-      - "5432:5432"
+      - "5434:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
