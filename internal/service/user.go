@@ -2,18 +2,11 @@ package service
 
 import (
 	"NonuNamak/internal/model"
-<<<<<<< HEAD
-	"NonuNamak/pkg/database"
-=======
 	"NonuNamak/internal/repository"
->>>>>>> master
 	"errors"
 	"golang.org/x/crypto/bcrypt"
 )
 
-<<<<<<< HEAD
-func CreateUser(name, email, password string) (*model.User, error) {
-=======
 type UserService struct {
 	repo repository.UserRepository
 }
@@ -24,7 +17,6 @@ func NewUserService(repo repository.UserRepository) *UserService {
 
 // CreateUser - создание пользователя
 func (s *UserService) CreateUser(name, email, password string) (*model.User, error) {
->>>>>>> master
 	if name == "" || email == "" || password == "" {
 		return nil, errors.New("имя, email и пароль не могут быть пустыми")
 	}
@@ -38,24 +30,15 @@ func (s *UserService) CreateUser(name, email, password string) (*model.User, err
 		Name:     name,
 		Email:    email,
 		Password: string(hashedPassword),
-<<<<<<< HEAD
-		Role:    "user",
-	}
-
-	if err := database.DB.Create(user).Error; err != nil {
-=======
 		Role:     "user",
 	}
 
 	if err := s.repo.Create(user); err != nil {
->>>>>>> master
 		return nil, err
 	}
 
 	return user, nil
 }
-<<<<<<< HEAD
-=======
 
 // GetUserByID - получение пользователя по ID
 func (s *UserService) GetUserByID(id uint) (*model.User, error) {
@@ -141,4 +124,3 @@ func (s *UserService) PatchUser(id uint, updates map[string]interface{}) (*model
 
 	return user, nil
 }
->>>>>>> master
